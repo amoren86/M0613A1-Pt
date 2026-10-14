@@ -1,0 +1,134 @@
+<project xmlns="https://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cat.institutmarianao</groupId>
+	<artifactId>students-inmemory-dao</artifactId>
+	<version>26.27</version>
+	<packaging>ejb</packaging>
+	<description>
+        This pom is intended to generate a client jar file containing only the classes needed by the client, to be used by more than one application.
+	</description>
+	
+	<properties>
+		<!-- General properties -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.release>17</maven.compiler.release>
+
+		<!-- Dependency versions -->
+		<jakartaee.api.version>10.0.0</jakartaee.api.version>
+
+		<!-- Plugin versions -->
+		<compiler.plugin.version>3.13.0</compiler.plugin.version>
+		<ejb.plugin.version>3.2.1</ejb.plugin.version>
+		<ejb.version>3.2</ejb.version>
+
+		<antrun.plugin.version>3.1.0</antrun.plugin.version>
+		<!-- GlassFish domain lib directory -->
+		<glassfish.domain.lib>
+			/home/xtec/glassfish7/glassfish/domains/domain1/lib</glassfish.domain.lib>
+	</properties>
+
+	<dependencies>
+		<!-- Jakarta EE API -->
+		<dependency>
+			<groupId>jakarta.platform</groupId>
+			<artifactId>jakarta.jakartaee-api</artifactId>
+			<version>${jakartaee.api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>students-dao</finalName>
+		<plugins>
+			<plugin>
+				<!-- Maven Antrun Plugin for copying EJB client JAR to GlassFish lib directory -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>${antrun.plugin.version}</version>
+				<executions>
+					<!-- Copy to glassfish on install -->
+					<execution>
+						<id>copy-to-glassfish</id>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<echo level="info"
+									message="Copying EJB Client to: ${glassfish.domain.lib}" />
+								<copy
+									file="${project.build.directory}/${project.build.finalName}-client.jar"
+									todir="${glassfish.domain.lib}"
+									overwrite="true" />
+								<echo level="info"
+									message="Copying MySQL driver to server" />
+								<echo
+									message="WARNING: GlassFish lib files installed." />
+								<echo
+									message="IMPORTANT: You MUST RESTART GlassFish to apply these changes." />
+								<echo
+									message="****************************************************************" />
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<!-- Remove from glassfish on clean -->
+						<id>clean-glassfish-lib</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<echo level="info"
+									message="Cleaning GlassFish lib directory..." />
+
+								<delete
+									file="${glassfish.domain.lib}/${project.build.finalName}-client.jar"
+									failonerror="false" />
+
+								<echo
+									message="****************************************************************" />
+								<echo
+									message="WARNING: GlassFish lib files removed." />
+								<echo
+									message="IMPORTANT: You MUST RESTART GlassFish to apply these changes." />
+								<echo
+									message="****************************************************************" />
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!-- Maven Compiler Plugin -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${compiler.plugin.version}</version>
+				</plugin>
+				<!-- Maven EJB Plugin -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-ejb-plugin</artifactId>
+					<version>${ejb.plugin.version}</version>
+					<configuration>
+						<ejbVersion>${ejb.version}</ejbVersion>
+						<generateClient>true</generateClient>
+						<!-- Include all classes in the client JAR -->
+						<clientIncludes>
+							<clientInclude>cat/institutmarianao/dao/*.class</clientInclude>
+							<clientInclude>cat/institutmarianao/model/*.class</clientInclude>
+						</clientIncludes>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

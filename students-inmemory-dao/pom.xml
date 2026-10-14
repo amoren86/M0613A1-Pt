@@ -1,0 +1,59 @@
+<project xmlns="https://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cat.institutmarianao</groupId>
+	<artifactId>students-inmemory-dao</artifactId>
+	<version>26.27</version>
+	<packaging>ejb</packaging>
+
+	<properties>
+		<!-- General properties -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.release>17</maven.compiler.release>
+
+		<!-- Dependency versions -->
+		<jakartaee.api.version>10.0.0</jakartaee.api.version>
+
+		<!-- Plugin versions -->
+		<compiler.plugin.version>3.13.0</compiler.plugin.version>
+		<ejb.plugin.version>3.2.1</ejb.plugin.version>
+		<ejb.version>3.2</ejb.version>
+
+		<antrun.plugin.version>3.1.0</antrun.plugin.version>
+	</properties>
+
+	<dependencies>
+		<!-- Jakarta EE API -->
+		<dependency>
+			<groupId>jakarta.platform</groupId>
+			<artifactId>jakarta.jakartaee-api</artifactId>
+			<version>${jakartaee.api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>students-dao</finalName>
+		<pluginManagement>
+			<plugins>
+				<!-- Maven Compiler Plugin -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${compiler.plugin.version}</version>
+				</plugin>
+				<!-- Maven EJB Plugin -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-ejb-plugin</artifactId>
+					<version>${ejb.plugin.version}</version>
+					<configuration>
+						<ejbVersion>${ejb.version}</ejbVersion>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
